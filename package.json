@@ -1,18 +1,31 @@
 {
-  "name": "keepie-client",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "express": "^4.16.4",
-    "form-data": "^2.3.3",
-    "multer": "^1.4.1",
-    "node-fetch": "^2.3.0"
-  }
+    "name": "keepie-client",
+    "version": "0.0.1",
+    "description": "A simple way of managing keepie procotol.",
+    "main": "client.js",
+    "scripts": {
+        "test": "node test.js"
+    },
+    "keywords": [
+        "secrets",
+        "microservice",
+        "passwords"
+    ],
+    "author": "Nic Ferrier, nic@ferrier.me.uk",
+    "license": "MIT",
+    "dependencies": {
+        "multer": "^1.4.1"
+    },
+    "devDependencies": {
+        "express": "^4.16.4",
+        "form-data": "^2.3.3",
+        "node-fetch": "^2.3.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nicferrier/keepie-client"
+    },
+    "engines": {
+        "node": ">=10.0"
+    }
 }
