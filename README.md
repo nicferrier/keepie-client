@@ -19,17 +19,17 @@ So the general form for keepie client is this:
 const keepieClient = require("keepie-client");
 const app = express();
 
-const keepieMiddleware = keepieClient.clientMiddleware();
+const keepie = keepieClient.clientMiddleware();
 
-app.post("/receive-secret", keepieMiddleware.receiver);
+app.post("/receive-secret", keepie.receiver);
 
-app.get("/", 
-        keepieMiddleware.auth("/receive-secret", "http://secretkeeper/keepie-request"),
-        function (req, res) {
-           const {service, secret} = req.keepieAuth;
-           res.send("<p>authorized!</p>");
-        }
-);
+app.get("/", keepie.auth({
+            receiptPath: "/receive-secret",
+            secretKeeperUrl: "http://secretkeeper/keepie-request"
+        }), (req, res) => {
+            const {service, secret} = req.keepieAuth;
+            res.send("<p>authorized!</p>");
+});
 ```
 
 So:
@@ -40,3 +40,7 @@ So:
 * when the auth arrives the request gets the service and the secret
 
 This is a conveniant way to deal with programming against Keepie.
+
+
+
+

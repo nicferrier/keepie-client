@@ -1,7 +1,8 @@
 const express=require("express");
 const FormData = require("form-data"); // test only
 const fetch = require("node-fetch"); // test only
-const keepie = require("./client.js");
+const keepieClient = require("./client.js");
+const assert = require("assert");
 
 const test = async function () {
     const {service, secret} = await new Promise(async (resolve, request) => {
@@ -22,13 +23,16 @@ const test = async function () {
         });
         const secretKeeperListener = secretKeeperApp.listen(0);
         const secretKeeperUrl = `http://localhost:${secretKeeperListener.address().port}/secret`;
-
+        
         const app = express();
-        const keepieMiddleware = keepie.clientMiddleware();
-        app.post("/receive", keepieMiddleware.receiver);
+        const keepie = keepieClient.clientMiddleware();
+        app.post("/receive", keepie.receiver);
         
         const listener = app.listen(0);
-        app.get("/", keepieMiddleware.auth("/receive", secretKeeperUrl), (req, res) => {
+        app.get("/", keepie.auth({
+            receiptPath: "/receive",
+            secretKeeperUrl: secretKeeperUrl
+        }), (req, res) => {
             res.sendStatus(204);
             listener.close();
             secretKeeperListener.close();

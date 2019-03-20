@@ -20,7 +20,16 @@ function initKeepie() {
     };
 
     const cache = new Map();
-    const request = async function (path, keepieUrl, localNetLoc, timeOut=5000) {
+
+    const request = async function () {
+        const [path, keepieUrl, localNetLoc, timeOut=5000] =
+              (typeof(arguments[0]) == "object")
+              ? (function () {
+                  const {path, keepieUrl, localNetLoc, timeOut} = arguments[0];
+                  return [path, keepieUrl, localNetLoc, timeOut];
+              })()
+              : arguments;
+        
         const key = `${path}__${keepieUrl}`;
         const cachedPromise = cache.get(key);
         if (cachedPromise !== undefined) {
@@ -64,6 +73,8 @@ function initKeepie() {
     };
 
     return {
+        request: request,
+        
         receiver: function (req, res, next) {
             if (req.method != "POST") { /// could check upload type as well
                 return next();
@@ -92,7 +103,15 @@ function initKeepie() {
             });
         },
 
-        auth: function (receiptPath, secretKeeperUrl) {
+        auth: function () {
+            const [receiptPath, secretKeeperUrl] =
+                  (typeof(arguments[0]) == "object")
+                  ? (function () {
+                      const {receiptPath, secretKeeperUrl} = arguments[0];
+                      return [receiptPath, secretKeeperUrl];
+                  })()
+                  : arguments;
+
             return async function (req, res, next) {
                 const {service, secret} = await request(
                     receiptPath, secretKeeperUrl, req.headers.host
@@ -105,5 +124,6 @@ function initKeepie() {
 }
 
 exports.clientMiddleware = initKeepie;
+exports.httpRequest = httpRequestObject;
 
 // End
